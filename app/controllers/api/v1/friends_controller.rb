@@ -6,7 +6,7 @@ class Api::V1::FriendsController < ApplicationController
 		friends = Friend.all
 
 		if friends
-			render json: {status: "SUCCESS", message: "Fetched all the friends successfully", data: friends}, status: :ok
+			render json: FriendSerializer.new(friends).serializable_hash, status: :ok
 		else
 			render json: friends.errors, status: :bad_request
 		end
@@ -16,19 +16,19 @@ class Api::V1::FriendsController < ApplicationController
 		friend = Friend.new(friend_params)
 
 		if friend.save
-			render json: {status: "SUCCESS", message: "Friend created successfully", data: friend}, status: :created
+			render json: FriendSerializer.new(friend).serializable_hash, status: :created
 		else
 			render json: friend.errors, status: :unprocessable_entity
 		end
 	end
 
 	def show
-		render json: {data: @friend}, status: :ok
+		render json: FriendSerializer.new(@friend).serializable_hash, status: :ok
 	end	
 
 	def update
 		if @friend.update!(friend_params)
-			render json: {message: "Friend is updated successfully", data: @friend}, status: :ok
+			render json: FriendSerializer.new(@friend).serializable_hash, status: :ok
 		else
 			render json: @friend.errors, status: :unprocessable_entity
 		end
@@ -36,7 +36,7 @@ class Api::V1::FriendsController < ApplicationController
 
 	def destroy
 	  @friend.destroy
-		render json: {message: "Friend deleted successfully"}, status: :ok
+		render json: {message: "#{@friend.name} Friend deleted successfully"}, status: :ok
 	end
 
 			
